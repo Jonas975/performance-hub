@@ -97,7 +97,7 @@ export default function MotionHero() {
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4 pt-2">
               <SpringWrapper hoverScale={1.06} tapScale={0.96}>
                 <a
-                  href="/products"
+                  href="/shop"
                   className="group inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-semibold uppercase tracking-wide text-foreground transition-colors hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-hover focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   Shop Now

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Oswald } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import PageTransition from "@/components/animations/PageTransition"; // WICHTIG: Der neue Wrapper
 import "./globals.css";
 
 const inter = Inter({
@@ -27,12 +28,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <body
         className={`${inter.variable} ${oswald.variable} antialiased bg-background text-foreground`}
       >
+        {/* Navbar bleibt statisch oben für ein hochwertiges App-Gefühl */}
         <Navbar />
-        {children}
+
+        {/* Nur der Hauptinhalt wird beim Routen-Wechsel animiert */}
+        <main>
+          <PageTransition>
+            {children}
+          </PageTransition>
+        </main>
+
         <Footer />
       </body>
     </html>
