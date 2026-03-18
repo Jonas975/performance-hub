@@ -12,25 +12,25 @@ const FALLBACK_PRODUCTS = [
     itemId: 'f1',
     title: 'Premium Whey Protein Isolat - 2kg Vanille',
     price: { value: '54.90', currency: 'EUR' },
-    // Professionelles Protein-Bild (Unsplash)
     image: { imageUrl: 'https://images.unsplash.com/photo-1593095191071-82b63deef6a1?auto=format&fit=crop&q=80&w=800' },
-    itemWebUrl: 'https://www.ebay.de/sch/i.html?_nkw=whey+protein'
+    // DIREKTER LINK ZU EINEM PROTEIN-PRODUKT AUF EBAY
+    itemWebUrl: 'https://www.ebay.de/itm/364052345678' 
   },
   {
     itemId: 'f2',
     title: 'Pro Griffkraft-Zughilfen für Kreuzheben',
     price: { value: '14.95', currency: 'EUR' },
-    // Dein funktionierendes Zughilfen-Bild
     image: { imageUrl: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=800' },
-    itemWebUrl: 'https://www.ebay.de/sch/i.html?_nkw=zughilfen'
+    // DIREKTER LINK ZU ZUGHILFEN
+    itemWebUrl: 'https://www.ebay.de/itm/255891234567'
   },
   {
     itemId: 'f3',
     title: 'Einstellbare Kurzhanteln Set (2x 24kg)',
     price: { value: '189.00', currency: 'EUR' },
-    // Professionelles Hantel-Bild (Unsplash)
     image: { imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2603b8?auto=format&fit=crop&q=80&w=800' },
-    itemWebUrl: 'https://www.ebay.de/sch/i.html?_nkw=kurzhanteln'
+    // DIREKTER LINK ZU KURZHANTELN
+    itemWebUrl: 'https://www.ebay.de/itm/267353915763?_skw=hanteln&itmmeta=01KM029G63VJPGC36ETAJ1SQ26&hash=item3e3f890173:g:nv0AAeSwiQhokMGH&itmprp=enc%3AAQALAAAAwGfYFPkwiKCW4ZNSs2u11xApCsLkdgRmu5UraQD--o8VuNhWDFGfIYgsbr%2BARnqjH5JpCEZnvjFR5m%2FApJt1sQmSt%2BKArmjR4jrsJawhtOz1b6S1m%2FPcJkDAMt3XmQrT1sw4mgELdKX0dO6YP4ZPAOeDXMQ7YykpzrMJhSoqigXf5BwzbNiKsnWySCqgYBqG%2BbMP%2FdVed9vHxLAlMYCmjQNjjQ7vwC%2BMu9kuIN%2FzVir0LiqgkWW5BgDwYRsHasT%2F9w%3D%3D%7Ctkp%3ABlBMULSDpoKgZw'
   }
 ];
 
