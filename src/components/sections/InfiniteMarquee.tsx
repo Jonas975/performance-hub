@@ -4,11 +4,16 @@ import { motion } from "framer-motion";
 import { FALLBACK_PRODUCTS } from "@/lib/constants";
 import SpringWrapper from "@/components/animations/SpringWrapper";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
+// Animation-Variants (identisch mit deinem Hero/Headline-Stil)
 const titleContainerVariants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.2 },
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.2,
+    },
   },
 };
 
@@ -19,24 +24,6 @@ const wordVariants = {
     y: 0,
     filter: "blur(0px)",
     transition: { duration: 0.5, ease: "easeOut" },
-  },
-};
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
-  },
-};
-
-const itemRevealVariants = {
-  hidden: { opacity: 0, y: 30, filter: "blur(4px)" },
-  visible: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
@@ -53,29 +40,48 @@ export default function InfiniteMarquee() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-4"
         >
-          <span className="text-accent-hover font-black uppercase tracking-[0.3em] text-[10px] block mb-2 opacity-0 select-none" aria-hidden="true">
-            Featured Deals
-          </span>
+          <div>
+            {/* Platzhalter für "Featured Deals" zur Wahrung der Abstände */}
+            <span className="text-accent-hover font-black uppercase tracking-[0.3em] text-[10px] block mb-2 opacity-0 select-none" aria-hidden="true">
+              Featured Deals
+            </span>
 
-          <h2 className="font-display text-4xl font-bold uppercase tracking-tight sm:text-5xl lg:text-6xl leading-none text-white">
-            {headlineWords.map((word, i) => (
-              <motion.span
-                key={i}
-                variants={wordVariants}
-                className={`mr-4 inline-block ${
-                  word === "Deals" ? "text-accent-hover italic" : ""
-                }`}
-              >
-                {word}
-              </motion.span>
-            ))}
-          </h2>
+            {/* Headline */}
+            <h2 className="font-display text-4xl font-bold uppercase tracking-tight sm:text-5xl lg:text-6xl leading-none text-white flex flex-wrap">
+              {headlineWords.map((word, i) => (
+                <motion.span
+                  key={i}
+                  variants={wordVariants}
+                  className={`mr-4 inline-block ${
+                    word === "Deals" ? "text-accent-hover italic" : ""
+                  }`}
+                >
+                  {word}
+                </motion.span>
+              ))}
+            </h2>
+          </div>
+
+          {/* "See All" Link mit der gleichen Animation-Logik */}
+          <motion.div variants={wordVariants} className="pb-1">
+            <Link 
+              href="/shop" // Hier deinen Shop-Pfad anpassen
+              className="group flex items-center gap-2 text-white/50 hover:text-accent-hover transition-colors duration-300"
+            >
+              <span className="font-black uppercase tracking-[0.2em] text-[12px]">
+                See All
+              </span>
+              <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-accent-hover group-hover:bg-accent-hover group-hover:text-background transition-all duration-300">
+                <ArrowRight size={14} />
+              </div>
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
 
       <div className="relative flex items-center">
-        {/* Dieser Div steuert jetzt wieder die unendliche Bewegung */}
         <motion.div
           className="flex gap-6 pr-6"
           animate={{ x: ["0%", "-50%"] }}
@@ -89,10 +95,10 @@ export default function InfiniteMarquee() {
           {marqueeItems.map((item, idx) => (
             <motion.div
               key={`${item.itemId}-${idx}`}
-              variants={itemRevealVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.05 }}
               className="w-[220px] md:w-[280px] flex-shrink-0"
             >
               <SpringWrapper hoverScale={1.03}>

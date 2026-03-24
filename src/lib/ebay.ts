@@ -1,58 +1,66 @@
 // src/lib/ebay.ts
 
-async function getAccessToken() {
-    try {
-      // Sandbox Auth URL
-      const authString = Buffer.from(`${process.env.EBAY_APP_ID}:${process.env.EBAY_CERT_ID}`).toString('base64');
-      
-      const response = await fetch("https://api.sandbox.ebay.com/identity/v1/oauth2/token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Basic ${authString}`,
-        },
-        body: "grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope",
-      });
-  
-      const data = await response.json();
-      if (data.error) {
-        console.error("eBay Sandbox Token Error:", data.error_description);
-        return null;
-      }
-      return data.access_token;
-    } catch (error) {
-      console.error("Sandbox Token Fetch failed:", error);
-      return null;
-    }
+/**
+ * Holt aktuelle Fitness-Deals von der eBay Finding API.
+ * Die Funktion ist exportiert als 'getEbayDeals', passend zum ProductGrid-Import.
+ */
+export async function getEbayDeals() {
+  const appId = process.env.EBAY_APP_ID;
+
+  // Sicherheitscheck: Wenn kein API-Key da ist, Grid nicht abstürzen lassen
+  if (!appId) {
+    console.error("EBAY_APP_ID is missing in environment variables.");
+    return [];
   }
-  
-  export async function getEbayDeals(keyword: string) {
-    const token = await getAccessToken();
-    if (!token) return [];
-  
-    try {
-      // Sandbox Browse API URL
-      const response = await fetch(
-        `https://api.sandbox.ebay.com/buy/browse/v1/item_summary/search?q=${keyword}&limit=3`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "X-EBAY-C-MARKETPLACE-ID": "EBAY_DE",
-          },
-        }
-      );
-  
-      const data = await response.json();
-      
-      // WICHTIG: In der Sandbox gibt es oft keine echten Suchergebnisse. 
-      // Wenn die Liste leer ist, geben wir das im Terminal aus.
-      if (!data.itemSummaries || data.itemSummaries.length === 0) {
-        console.log("Sandbox Hinweis: Suche erfolgreich, aber keine Test-Artikel gefunden.");
-      }
-  
-      return data.itemSummaries || [];
-    } catch (error) {
-      console.error("eBay Sandbox Search failed:", error);
+
+  try {
+    // Suche nach Fitness-Supplements, limitiert auf 6 Artikel
+    const url = `https://svcs.ebay.com/services/search/FindingService/v1` +
+      `?OPERATION-NAME=findItemsByKeywords` +
+      `&SERVICE-VERSION=1.0.0` +
+      `&SECURITY-APPNAME=${appId}` +
+      `&RESPONSE-DATA-FORMAT=JSON` +
+      `&REST-PAYLOAD` +
+      `&keywords=fitness%20supplements` +
+      `&paginationInput.entriesPerPage=6` +
+      `&GLOBAL-ID=EBAY-DE`; // Fokus auf den deutschen Marktplatz
+
+    const response = await fetch(url, {
+      next: { revalidate: 3600 }, // Cache für 1 Stunde (ISR)
+    });
+
+    if (!response.ok) {
+      throw new Error(`eBay API responded with status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Tiefe Prüfung der JSON-Struktur von eBay
+    const searchResponse = data?.findItemsByKeywordsResponse?.[0];
+    
+    if (searchResponse?.ack?.[0] === "Failure") {
+      console.error("eBay API Error:", searchResponse.errorMessage?.[0]?.message?.[0]);
       return [];
     }
+
+    const items = searchResponse?.searchResult?.[0]?.item || [];
+
+    // Wir geben die Rohdaten zurück, das ProductGrid übernimmt das Mapping
+    return items;
+
+  } catch (error) {
+    console.error("Failed to fetch eBay deals:", error);
+    // Rückgabe eines leeren Arrays verhindert, dass die gesamte Page crashed
+    return [];
   }
+}
+
+/**
+ * Hilfsfunktion, falls du später einzelne Produkte anhand der ID laden willst.
+ * (Entspricht dem Vorschlag aus deiner Fehlermeldung)
+ */
+export async function getEbayProduct(itemId: string) {
+  // Implementierung für Einzelabruf falls nötig...
+  console.log("Fetching single item:", itemId);
+  return null;
+}
