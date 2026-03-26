@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Calendar, Clock, ArrowRight, ChevronRight, ChevronLeft } from "lucide-react";
 import { blogPosts } from "@/lib/data";
 import ScrollReveal from "@/components/animations/ScrollReveal"; // Import für die Animation

@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { FALLBACK_PRODUCTS } from "@/lib/constants";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion"; 
+import { motion, AnimatePresence } from "motion/react"; 
 import { ArrowUpRight, Filter, ChevronDown, Search } from "lucide-react";
 import SpringWrapper, { springBounce } from "@/components/animations/SpringWrapper";
 
@@ -51,11 +51,11 @@ export default function ShopPage() {
       y: 0,
       filter: "blur(0px)",
       transition: { 
-        duration: 1.2, // Behält das langsame, edle Einfließen bei
-        ease: [0.22, 1, 0.36, 1],
+        duration: 1.2,
+        ease: [0.22, 1, 0.36, 1] as const,
         y: { 
-          type: "spring", 
-          stiffness: 80, // Weiche Feder für Glide-Effekt
+          type: "spring" as const, 
+          stiffness: 80,
           damping: 20 
         } 
       },

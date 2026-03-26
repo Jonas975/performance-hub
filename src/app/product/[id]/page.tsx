@@ -53,11 +53,11 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               <div className="flex items-center gap-2 mb-6 text-accent-hover">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={18} fill={i < Math.floor(parseFloat(product.rating?.averageRating || "0")) ? "currentColor" : "none"} />
+                    <Star key={i} size={18} fill={i < Math.floor(parseFloat((product as any).rating?.averageRating || "4.5")) ? "currentColor" : "none"} />
                   ))}
                 </div>
                 <span className="text-sm font-bold text-white">
-                  {product.rating?.averageRating || "4.5"} ({product.rating?.reviewCount || 0} Bewertungen)
+                  {(product as any).rating?.averageRating || "4.5"} ({(product as any).rating?.reviewCount || 0} Bewertungen)
                 </span>
               </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { FALLBACK_PRODUCTS } from "@/lib/constants";
 import SpringWrapper from "@/components/animations/SpringWrapper";
 import Link from "next/link";
@@ -23,7 +23,7 @@ const wordVariants = {
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.5, ease: "easeOut" as const },
   },
 };
 
