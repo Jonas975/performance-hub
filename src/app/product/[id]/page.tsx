@@ -7,15 +7,35 @@ import { getEbayProduct } from "@/lib/ebay";
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: productId } = await params;
 
-  // 1. Versuche Daten von eBay Sandbox zu laden
+  // 1. Try live eBay Browse API
   const ebayProduct = await getEbayProduct(productId);
-  
-  // 2. Fallback auf lokale Daten, wenn eBay nichts liefert
+
+  // 2. Fallback to local constants
   const fallbackProduct = FALLBACK_PRODUCTS.find(
     (p) => p?.itemId?.toString() === productId?.toString()
   );
 
-  const product = ebayProduct || fallbackProduct;
+  // 3. Normalize into a unified shape
+  const product = ebayProduct
+    ? {
+        title: ebayProduct.title,
+        price: ebayProduct.price,
+        description: ebayProduct.description || ebayProduct.shortDescription || "",
+        images: [
+          ebayProduct.image?.imageUrl,
+          ...ebayProduct.additionalImages.map((img) => img.imageUrl),
+        ].filter(Boolean) as string[],
+        itemWebUrl: ebayProduct.itemWebUrl,
+      }
+    : fallbackProduct
+      ? {
+          title: fallbackProduct.title,
+          price: fallbackProduct.price,
+          description: fallbackProduct.description || "",
+          images: fallbackProduct.images || [],
+          itemWebUrl: fallbackProduct.itemWebUrl || "#",
+        }
+      : null;
 
   if (!product) {
     return (
@@ -28,19 +48,17 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     );
   }
 
-  const allImages = product.images || [];
-
   return (
     <div className="min-h-screen bg-background pt-32 pb-20">
       <div className="max-w-7xl mx-auto px-6">
         <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-12 transition-colors group w-fit">
-          <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" /> 
+          <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
           <span className="font-bold uppercase tracking-tight">Zurück zur Übersicht</span>
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           <div className="sticky top-32">
-            <ProductGallery images={allImages} />
+            <ProductGallery images={product.images} />
           </div>
 
           <div className="flex flex-col">
@@ -48,17 +66,15 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               <h1 className="text-5xl font-black uppercase tracking-tighter mb-4 leading-none text-white">
                 {product.title}
               </h1>
-              
-              {/* Bewertungen Sektion */}
+
+              {/* Rating placeholder */}
               <div className="flex items-center gap-2 mb-6 text-accent-hover">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={18} fill={i < Math.floor(parseFloat((product as any).rating?.averageRating || "4.5")) ? "currentColor" : "none"} />
+                    <Star key={i} size={18} fill={i < 4 ? "currentColor" : "none"} />
                   ))}
                 </div>
-                <span className="text-sm font-bold text-white">
-                  {(product as any).rating?.averageRating || "4.5"} ({(product as any).rating?.reviewCount || 0} Bewertungen)
-                </span>
+                <span className="text-sm font-bold text-white">4.5</span>
               </div>
 
               <div className="flex items-center gap-4">
@@ -68,12 +84,14 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
 
-            <div className="bg-surface/50 border border-surface-light rounded-2xl p-6 mb-8">
-              <h3 className="text-sm font-bold uppercase tracking-widest text-accent-hover mb-3">Beschreibung</h3>
-              <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-line">
-                {product.description}
-              </p>
-            </div>
+            {product.description && (
+              <div className="bg-surface/50 border border-surface-light rounded-2xl p-6 mb-8">
+                <h3 className="text-sm font-bold uppercase tracking-widest text-accent-hover mb-3">Beschreibung</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-line">
+                  {product.description}
+                </p>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-4 mb-10">
               <div className="flex items-center gap-3 p-4 rounded-xl bg-surface/30 border border-surface-light">
@@ -86,13 +104,13 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
 
-            <a 
-              href={product.itemWebUrl} 
-              target="_blank" 
+            <a
+              href={product.itemWebUrl}
+              target="_blank"
               rel="noopener noreferrer"
               className="group w-full py-6 rounded-2xl bg-foreground text-background font-black uppercase text-xl text-center flex items-center justify-center gap-4 hover:bg-accent-hover hover:text-foreground transition-all shadow-xl active:scale-95"
             >
-              <ShoppingCart size={28} /> 
+              <ShoppingCart size={28} />
               Jetzt bei eBay kaufen
             </a>
           </div>
