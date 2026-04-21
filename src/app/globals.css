@@ -27,15 +27,41 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ── Smooth scroll ── */
-html {
-  scroll-behavior: smooth;
+/* ── AI Description Formatting ── */
+
+/* Sorgt dafür, dass Zeilenumbrüche (\n) der KI als echte Abstände angezeigt werden */
+.whitespace-pre-line {
+  white-space: pre-line;
+  line-height: 1.8; /* Größerer Zeilenabstand für bessere Lesbarkeit */
 }
 
-/* ── Selection color ── */
-::selection {
-  background-color: #0f766e;
-  color: #f4f4f5;
+/* Styling für Kategorien/Überschriften in der Beschreibung (z.B. **Antrieb**) */
+.whitespace-pre-line strong {
+  display: block;
+  color: var(--foreground);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 1.1rem;
+  margin-top: 1.5rem; /* Abstand nach oben */
+  border-bottom: 1px solid var(--surface-light);
+  padding-bottom: 0.25rem;
+  width: fit-content;
+}
+
+/* Styling für Stichpunkte, die mit "-" beginnen */
+.whitespace-pre-line {
+  unicode-bidi: embed;
+}
+
+/* src/app/globals.css */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

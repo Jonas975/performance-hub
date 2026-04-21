@@ -1,12 +1,15 @@
+// src/components/sections/InfiniteMarquee.tsx
 "use client";
 
-import { motion } from "motion/react";
+import type { EbayProductListing } from "@/lib/ebay";
+import { motion } from "framer-motion"; // <-- Geändert zu framer-motion
 import { FALLBACK_PRODUCTS } from "@/lib/constants";
 import SpringWrapper from "@/components/animations/SpringWrapper";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import WishlistButton from "@/components/WishlistButton"; 
 
-// Animation-Variants (identisch mit deinem Hero/Headline-Stil)
+// Animation-Variants
 const titleContainerVariants = {
   hidden: {},
   visible: {
@@ -29,8 +32,24 @@ const wordVariants = {
 
 const headlineWords = ["Top", "Fitness", "Deals"];
 
-export default function InfiniteMarquee() {
-  const marqueeItems = [...FALLBACK_PRODUCTS, ...FALLBACK_PRODUCTS];
+export default function InfiniteMarquee({
+  products,
+}: {
+  products?: EbayProductListing[];
+}) {
+  const displayProducts =
+    products && products.length > 0
+      ? products
+      : FALLBACK_PRODUCTS.map((p) => ({
+          itemId: p.itemId,
+          title: p.title,
+          price: p.price,
+          imageUrl: p.images[0] || null,
+          summaryImages: p.images || [], // Wichtig für die Fallbacks
+          itemWebUrl: p.itemWebUrl,
+        }));
+        
+  const marqueeItems = [...displayProducts, ...displayProducts];
 
   return (
     <section className="relative pb-12 bg-background overflow-hidden">
@@ -43,12 +62,13 @@ export default function InfiniteMarquee() {
           className="flex flex-col md:flex-row md:items-end md:justify-between gap-4"
         >
           <div>
-            {/* Platzhalter für "Featured Deals" zur Wahrung der Abstände */}
-            <span className="text-accent-hover font-black uppercase tracking-[0.3em] text-[10px] block mb-2 opacity-0 select-none" aria-hidden="true">
+            <span
+              className="text-accent-hover font-black uppercase tracking-[0.3em] text-[10px] block mb-2 opacity-0 select-none"
+              aria-hidden="true"
+            >
               Featured Deals
             </span>
 
-            {/* Headline */}
             <h2 className="font-display text-4xl font-bold uppercase tracking-tight sm:text-5xl lg:text-6xl leading-none text-white flex flex-wrap">
               {headlineWords.map((word, i) => (
                 <motion.span
@@ -64,10 +84,9 @@ export default function InfiniteMarquee() {
             </h2>
           </div>
 
-          {/* "See All" Link mit der gleichen Animation-Logik */}
           <motion.div variants={wordVariants} className="pb-1">
-            <Link 
-              href="/shop" // Hier deinen Shop-Pfad anpassen
+            <Link
+              href="/shop"
               className="group flex items-center gap-2 text-white/50 hover:text-accent-hover transition-colors duration-300"
             >
               <span className="font-black uppercase tracking-[0.2em] text-[12px]">
@@ -90,41 +109,54 @@ export default function InfiniteMarquee() {
             ease: "linear",
             repeat: Infinity,
           }}
-          whileHover={{ transition: { duration: 80 } }} 
+          whileHover={{ transition: { duration: 80 } }}
         >
-          {marqueeItems.map((item, idx) => (
-            <motion.div
-              key={`${item.itemId}-${idx}`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.05 }}
-              className="w-[220px] md:w-[280px] flex-shrink-0"
-            >
-              <SpringWrapper hoverScale={1.03}>
-                <Link href={`/product/${item.itemId}`}>
+          {marqueeItems
+            .map((item) => ({
+              ...item,
+              // FIX: Hier checken wir BEIDE Bildquellen, wie im Shop!
+              displayImage: item.imageUrl || (item.summaryImages && item.summaryImages[0]) || null
+            }))
+            .filter((item) => item.displayImage !== null) // Nur filtern, wenn wirklich GAR KEIN Bild da ist
+            .map((item, idx) => (
+              <motion.div
+                key={`${item.itemId}-${idx}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.05 }}
+                className="w-[220px] md:w-[280px] flex-shrink-0"
+              >
+                <SpringWrapper hoverScale={1.03}>
                   <div className="group relative aspect-[4/5] overflow-hidden rounded-2xl border border-white/5 bg-surface/30 shadow-xl">
-                    <img
-                      src={item.images[0]}
-                      alt={item.title}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
                     
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-transparent to-transparent p-5 flex flex-col justify-end">
-                      <div className="translate-y-1 group-hover:translate-y-0 transition-transform">
-                        <span className="text-accent-hover font-black italic text-sm mb-1 block">
-                          {item.price.value} €
-                        </span>
-                        <h3 className="text-white text-xs md:text-sm font-bold uppercase tracking-tight truncate">
-                          {item.title}
-                        </h3>
-                      </div>
+                    {/* WUNSCHLISTE BUTTON */}
+                    <div className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <WishlistButton product={item} />
                     </div>
+
+                    <Link href={`/product/${encodeURIComponent(item.itemId)}`}>
+                      <img
+                        src={item.displayImage!} // Nutzt jetzt das garantierte Bild
+                        alt={item.title}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-transparent to-transparent p-5 flex flex-col justify-end">
+                        <div className="translate-y-1 group-hover:translate-y-0 transition-transform">
+                          <span className="text-accent-hover font-black italic text-sm mb-1 block">
+                            {item.price?.value} {item.price?.currency}
+                          </span>
+                          <h3 className="text-white text-xs md:text-sm font-bold uppercase tracking-tight truncate">
+                            {item.title}
+                          </h3>
+                        </div>
+                      </div>
+                    </Link>
                   </div>
-                </Link>
-              </SpringWrapper>
-            </motion.div>
-          ))}
+                </SpringWrapper>
+              </motion.div>
+            ))}
         </motion.div>
       </div>
     </section>

@@ -20,12 +20,17 @@ const MARKETPLACE_ID = process.env.EBAY_MARKETPLACE_ID || "EBAY_DE";
 let cachedToken: string | null = null;
 let tokenExpiresAt = 0;
 
+export const SANDBOX_TEST_SEARCH_QUERY = "sport";
+export const PRODUCTION_FITNESS_SEARCH_QUERY =
+  "(whey protein, creatine, dumbbell, kettlebell, resistance band, home gym)";
+const STORE_LISTING_QUERY = isSandbox
+  ? SANDBOX_TEST_SEARCH_QUERY
+  : PRODUCTION_FITNESS_SEARCH_QUERY;
+
 /**
- * Mint an Application access token using the client_credentials grant.
- * Tokens are cached and reused until they expire (7200s / 2 hours).
+ * Erzeugt oder erneuert das OAuth 2.0 Access Token.
  */
 async function getAccessToken(): Promise<string> {
-  // Return cached token if still valid (with 60s buffer)
   if (cachedToken && Date.now() < tokenExpiresAt - 60_000) {
     return cachedToken;
   }
@@ -34,15 +39,10 @@ async function getAccessToken(): Promise<string> {
   const clientSecret = process.env.EBAY_CERT_ID;
 
   if (!clientId || !clientSecret) {
-    throw new Error(
-      "Missing EBAY_APP_ID or EBAY_CERT_ID in environment variables."
-    );
+    throw new Error("Missing EBAY_APP_ID or EBAY_CERT_ID in environment variables.");
   }
 
-  // Base64-encode "client_id:client_secret"
-  const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString(
-    "base64"
-  );
+  const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
 
   const response = await fetch(TOKEN_URL, {
     method: "POST",
@@ -63,80 +63,19 @@ async function getAccessToken(): Promise<string> {
   cachedToken = data.access_token;
   tokenExpiresAt = Date.now() + data.expires_in * 1000;
 
-  console.log(
-    `[eBay] OAuth token minted (${isSandbox ? "SANDBOX" : "PRODUCTION"}, expires in ${data.expires_in}s)`
-  );
-
   return cachedToken!;
 }
 
-/* ── Browse API: Search ── */
+/* ── Interfaces ── */
 
-export interface EbayItem {
+export interface EbayProductListing {
   itemId: string;
   title: string;
   price: { value: string; currency: string };
-  image: { imageUrl: string } | null;
+  imageUrl: string | null;
+  summaryImages: string[]; // Fix: Speichert zusätzliche Bilder aus der Suche für die Bike-Galerie
   itemWebUrl: string;
-  condition: string;
 }
-
-/**
- * Search eBay listings via the Browse API.
- * Returns an array of item summaries or [] on failure.
- */
-export async function getEbayDeals(
-  query = "fitness supplements",
-  limit = 6
-): Promise<EbayItem[]> {
-  try {
-    const token = await getAccessToken();
-
-    const url =
-      `${BROWSE_URL}/item_summary/search` +
-      `?q=${encodeURIComponent(query)}` +
-      `&limit=${limit}`;
-
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "X-EBAY-C-MARKETPLACE-ID": MARKETPLACE_ID,
-        Accept: "application/json",
-      },
-      next: { revalidate: 86400 }, // 24h cache
-    });
-
-    if (!response.ok) {
-      const text = await response.text();
-      console.error(
-        `[eBay] Browse API search failed (${response.status}):`,
-        text
-      );
-      return [];
-    }
-
-    const data = await response.json();
-    const items: EbayItem[] = (data.itemSummaries || []).map((item: any) => ({
-      itemId: item.itemId,
-      title: item.title,
-      price: {
-        value: item.price?.value || "0.00",
-        currency: item.price?.currency || "EUR",
-      },
-      image: item.image ? { imageUrl: item.image.imageUrl } : null,
-      itemWebUrl: item.itemWebUrl || "#",
-      condition: item.condition || "New",
-    }));
-
-    console.log(`[eBay] Search "${query}" returned ${items.length} items`);
-    return items;
-  } catch (error) {
-    console.error("[eBay] Search error:", error);
-    return [];
-  }
-}
-
-/* ── Browse API: Get Single Item ── */
 
 export interface EbayItemDetail {
   itemId: string;
@@ -148,18 +87,84 @@ export interface EbayItemDetail {
   condition: string;
   description: string;
   shortDescription: string;
+  primaryItemGroupId?: string; // Für Varianten-Tracking
+}
+
+/* ── Browse API: Search ── */
+
+/**
+ * Holt Produktlisten und bewahrt dabei alle Bild-Metadaten aus den Suchergebnissen.
+ */
+export async function getStoreProductListings(limit = 12): Promise<EbayProductListing[]> {
+  try {
+    const token = await getAccessToken();
+    const url = `${BROWSE_URL}/item_summary/search?q=${encodeURIComponent(STORE_LISTING_QUERY)}&limit=${limit}`;
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "X-EBAY-C-MARKETPLACE-ID": MARKETPLACE_ID,
+        Accept: "application/json",
+      },
+      next: { revalidate: 3600 }, // 1h cache für die Shop-Übersicht
+    });
+
+    if (!response.ok) return [];
+
+    const data = await response.json();
+    
+    return (data.itemSummaries || []).map((item: any) => {
+      // Sammle alle verfügbaren Bilder aus der Suche (Thumbnail, Main, Additional)
+      const summaryImages = Array.from(new Set([
+        item.image?.imageUrl,
+        ...(item.additionalImages || []).map((img: any) => img.imageUrl),
+        ...(item.thumbnailImages || []).map((img: any) => img.imageUrl)
+      ].filter(Boolean))) as string[];
+
+      return {
+        itemId: item.itemId,
+        title: item.title,
+        price: {
+          value: item.price?.value || "0.00",
+          currency: item.price?.currency || "EUR",
+        },
+        imageUrl: item.image?.imageUrl || summaryImages[0] || null,
+        summaryImages: summaryImages,
+        itemWebUrl: item.itemWebUrl || "#",
+      };
+    });
+  } catch (error) {
+    console.error("[eBay] Search error:", error);
+    return [];
+  }
 }
 
 /**
- * Fetch a single eBay item by its Browse API item ID.
- * Returns null if the item is not found or the call fails.
+ * Controller-Fix: Reichert Listings ohne Bild mit Daten aus der Detail-API an.
+ * Dies stellt sicher, dass Karten im Shop das gleiche Bild zeigen wie die Produktseite.
  */
-export async function getEbayProduct(
-  itemId: string
-): Promise<EbayItemDetail | null> {
+export async function enrichListingsWithImages(listings: EbayProductListing[]): Promise<EbayProductListing[]> {
+  return Promise.all(
+    listings.map(async (item) => {
+      if (!item.imageUrl) {
+        const details = await getEbayProduct(item.itemId);
+        if (details?.image?.imageUrl) {
+          return { ...item, imageUrl: details.image.imageUrl };
+        }
+      }
+      return item;
+    })
+  );
+}
+
+/* ── Browse API: Get Single Item ── */
+
+/**
+ * Holt Details für ein einzelnes Produkt.
+ */
+export async function getEbayProduct(itemId: string): Promise<EbayItemDetail | null> {
   try {
     const token = await getAccessToken();
-
     const url = `${BROWSE_URL}/item/${encodeURIComponent(itemId)}`;
 
     const response = await fetch(url, {
@@ -171,12 +176,7 @@ export async function getEbayProduct(
       next: { revalidate: 86400 },
     });
 
-    if (!response.ok) {
-      console.error(
-        `[eBay] getItem failed for ${itemId} (${response.status})`
-      );
-      return null;
-    }
+    if (!response.ok) return null;
 
     const item = await response.json();
 
@@ -195,6 +195,7 @@ export async function getEbayProduct(
       condition: item.condition || "Unknown",
       description: item.description || "",
       shortDescription: item.shortDescription || "",
+      primaryItemGroupId: item.primaryItemGroupId,
     };
   } catch (error) {
     console.error("[eBay] getItem error:", error);

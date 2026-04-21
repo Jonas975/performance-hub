@@ -14,6 +14,9 @@ function manualCleanup(title: string): string {
     .trim();
 }
 
+/**
+ * Optimiere Produkttitel für die Grid-Ansicht
+ */
 export async function optimizeFitnessTitle(rawTitle: string): Promise<string> {
   if (!apiKey || !rawTitle) return manualCleanup(rawTitle);
 
@@ -26,8 +29,38 @@ export async function optimizeFitnessTitle(rawTitle: string): Promise<string> {
     const response = await result.response;
     return response.text().trim() || manualCleanup(rawTitle);
   } catch (error) {
-    // Hier landet dein aktueller Fehler. Statt nur zu loggen, 
-    // geben wir jetzt einen manuell bereinigten Titel zurück.
     return manualCleanup(rawTitle);
+  }
+}
+
+/**
+ * Verwandelt rohes eBay-HTML in eine saubere, strukturierte Markdown-Beschreibung.
+ */
+export async function optimizeProductDescription(rawHtml: string): Promise<string> {
+  if (!apiKey || !rawHtml) return rawHtml;
+
+  try {
+    const prompt = `
+      Du bist ein Experte für E-Commerce Copywriting. Deine Aufgabe ist es, eine hässliche eBay-Produktbeschreibung in ein hochwertiges, sauberes Format für eine Premium-Fitness-Website umzuwandeln.
+      
+      FORMATIERUNGS-REGELN (STRIKT EINHALTEN):
+      1. Nutze klare Stichpunkte (mit - oder *) für technische Daten.
+      2. Setze nach JEDEM Stichpunkt eine Leerzeile.
+      3. Gruppiere die Daten in Kategorien (z.B. **Antrieb**, **Akku**, **Ausstattung**).
+      4. Setze vor und nach JEDER Kategorie-Überschrift ZWEI Leerzeilen.
+      5. Schreibe eine kurze, packende Einleitung (max 2 Sätze) am Anfang.
+      6. Nutze ausschließlich Markdown, kein HTML.
+      
+      Hier ist der rohe Text/HTML:
+      "${rawHtml}"
+    `;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    return response.text().trim();
+  } catch (error) {
+    console.error("Gemini Optimization failed:", error);
+    // Fallback: Wenn die KI streikt, entfernen wir nur die HTML-Tags manuell
+    return rawHtml.replace(/<[^>]*>?/gm, '').trim();
   }
 }
