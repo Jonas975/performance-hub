@@ -123,7 +123,6 @@ What to Skip:
 - Anything "As Seen on TV"
 
 Focus on compound movements: presses, rows, squats, deadlifts, and pull-ups. You'll be surprised how far dumbbells and bands can take you.`,
-        readTime: "8 min read",
       },
       de: {
         title: "Das ultimative Home-Gym Setup unter €1.000",
