@@ -1,13 +1,14 @@
 // src/app/product/[id]/page.tsx
 import { FALLBACK_PRODUCTS } from "@/lib/constants";
 import Link from "next/link";
-import { ArrowLeft, ShoppingCart, ShieldCheck, Truck, Star, ArrowRight } from "lucide-react";
+import { ArrowLeft, ShoppingCart, ShieldCheck, Truck, Star, ArrowRight, ExternalLink } from "lucide-react";
 import ProductGallery from "@/components/ProductGallery";
 import { getEbayProduct, getStoreProductListings } from "@/lib/ebay";
 import { optimizeProductDescription } from "@/lib/gemini";
 import ExpandableDescription from "@/components/ExpandableDescription";
 import SpringWrapper from "@/components/animations/SpringWrapper";
-import WishlistButton from "@/components/WishlistButton"; // Neu importiert
+import WishlistButton from "@/components/WishlistButton";
+import { generateAffiliateLink } from "@/lib/affiliateUtils";
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: rawId } = await params;
@@ -39,6 +40,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         ...(summaryMatch?.summaryImages || [])
       ])).filter(Boolean) as string[],
       itemWebUrl: ebayProduct.itemWebUrl,
+      affiliateUrl: ebayProduct.affiliateUrl || generateAffiliateLink({itemId: ebayProduct.itemId, marketplace: "EBAY_DE", customId: "product-detail"}),
       imageUrl: ebayProduct.image?.imageUrl || (summaryMatch?.summaryImages && summaryMatch.summaryImages[0])
     };
   } else if (fallbackProduct) {
@@ -49,6 +51,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       description: fallbackProduct.description || "",
       images: fallbackProduct.images || [],
       itemWebUrl: fallbackProduct.itemWebUrl || "#",
+      affiliateUrl: fallbackProduct.affiliateUrl || generateAffiliateLink({itemId: fallbackProduct.itemId, marketplace: "EBAY_DE", customId: "product-detail"}),
       imageUrl: fallbackProduct.images[0]
     };
   }
@@ -106,8 +109,8 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
 
-            <a href={product.itemWebUrl} target="_blank" className="group w-full py-6 rounded-2xl bg-foreground text-background font-black uppercase text-xl text-center flex items-center justify-center gap-4 hover:bg-accent-hover hover:text-foreground transition-all shadow-2xl active:scale-95">
-              <ShoppingCart size={28} /> Deal sichern
+            <a href={product.affiliateUrl || product.itemWebUrl} target="_blank" rel="noopener noreferrer sponsored" className="group w-full py-6 rounded-2xl bg-foreground text-background font-black uppercase text-xl text-center flex items-center justify-center gap-4 hover:bg-accent-hover hover:text-foreground transition-all shadow-2xl active:scale-95">
+              <ShoppingCart size={28} /> Buy on eBay
             </a>
           </div>
         </div>
@@ -137,8 +140,8 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                     <WishlistButton product={item} />
                   </div>
                   
-                  <Link href={`/product/${encodeURIComponent(item.itemId)}`} className="block h-full">
-                    <div className="bg-surface/20 border border-surface-light rounded-3xl p-4 h-full flex flex-col hover:border-accent-hover transition-colors">
+                  <div className="bg-surface/20 border border-surface-light rounded-3xl p-4 h-full flex flex-col hover:border-accent-hover transition-colors">
+                    <Link href={`/product/${encodeURIComponent(item.itemId)}`} className="block flex-grow">
                       <div className="aspect-square rounded-2xl overflow-hidden mb-4 bg-black">
                         <img 
                           src={item.imageUrl || (item.summaryImages && item.summaryImages[0])} 
@@ -149,11 +152,19 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                       <h3 className="text-sm font-bold uppercase text-white line-clamp-2 mb-2 group-hover:text-accent-hover transition-colors">
                         {item.title}
                       </h3>
-                      <p className="text-lg font-black text-accent-hover italic mt-auto">
+                      <p className="text-lg font-black text-accent-hover italic">
                         {item.price.value} {item.price.currency}
                       </p>
-                    </div>
-                  </Link>
+                    </Link>
+                    <a 
+                      href={item.affiliateUrl}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      className="mt-4 w-full py-2 px-3 bg-accent-hover/20 text-accent-hover text-xs font-black uppercase rounded-lg hover:bg-accent-hover hover:text-background transition-all flex items-center justify-center gap-1"
+                    >
+                      <ShoppingCart size={12} /> Buy
+                    </a>
+                  </div>
                 </div>
               </SpringWrapper>
             ))}

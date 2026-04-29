@@ -6,6 +6,7 @@ import {
   type EbayProductListing,
 } from "@/lib/ebay";
 import { FALLBACK_PRODUCTS } from "@/lib/constants";
+import { generateAffiliateLink } from "@/lib/affiliateUtils";
 
 export default async function Home() {
   let marqueeProducts: EbayProductListing[] = [];
@@ -23,8 +24,9 @@ export default async function Home() {
       title: p.title,
       price: p.price,
       imageUrl: p.images?.[0] || null,
-      summaryImages: p.images || [],
       itemWebUrl: p.itemWebUrl || "#",
+      affiliateUrl: generateAffiliateLink({itemId: p.itemId, marketplace: "EBAY_DE", customId: "homepage-marquee"}),
+      summaryImages: p.images || [],
     }));
   }
 

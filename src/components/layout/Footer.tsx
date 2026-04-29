@@ -3,16 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Instagram, Youtube } from "lucide-react";
-import { motion, useScroll } from "framer-motion"; // Importiert motion und useScroll
+import { motion, useScroll } from "framer-motion";
 import { SiTiktok } from "./TikTokIcon";
 import SpringWrapper from "@/components/animations/SpringWrapper";
-
-const footerLinks = [
-  { label: "Reviews", href: "/products" },
-  { label: "Software", href: "/blog" },
-  { label: "Community", href: "/about" },
-  { label: "Privacy", href: "#" },
-];
+import { useTranslation } from "@/hooks/useTranslations";
 
 const socialLinks = [
   { label: "Instagram", href: "#", icon: Instagram },
@@ -23,11 +17,13 @@ const socialLinks = [
 export default function Footer() {
   const { scrollY } = useScroll();
   const [isVisible, setIsVisible] = useState(false);
+  const tagline = useTranslation('footer.tagline');
+  const stayInLoop = useTranslation('footer.stayInLoop');
+  const join = useTranslation('footer.join');
+  const affiliate = useTranslation('footer.affiliate');
 
-  // Überwacht die Scroll-Position
   useEffect(() => {
     return scrollY.onChange((latest) => {
-      // Der Footer erscheint, sobald mehr als 100 Pixel gescrollt wurde
       if (latest > 100) {
         setIsVisible(true);
       } else {
@@ -38,7 +34,6 @@ export default function Footer() {
 
   return (
     <motion.footer
-      // Animation State
       initial={{ opacity: 0, y: 20 }}
       animate={{ 
         opacity: isVisible ? 1 : 0, 
@@ -47,77 +42,59 @@ export default function Footer() {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="border-t border-surface bg-background"
     >
-      <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
+      <div className="mx-auto max-w-7xl px-6 py-12 sm:py-16 lg:px-8">
+        {/* Grid auf 2 Spalten angepasst, da Navigate entfernt wurde */}
+        <div className="grid grid-cols-1 gap-8 sm:gap-10 md:gap-12 md:grid-cols-2">
+          
           {/* Brand + tagline */}
           <div className="flex flex-col gap-4">
             <Link
               href="/"
-              className="font-display text-lg font-bold uppercase tracking-wider text-foreground"
+              className="font-display text-xl sm:text-2xl font-black uppercase tracking-tighter text-foreground w-fit"
             >
               Performance<span className="text-accent-hover">Hub</span>
             </Link>
-            <p className="max-w-xs text-sm leading-relaxed text-muted">
-              Curated fitness products for athletes who demand the best.
-              Every recommendation backed by real testing.
+            <p className="max-w-xs text-xs sm:text-sm leading-relaxed text-muted">
+              {tagline}
             </p>
-          </div>
-
-          {/* Navigation */}
-          <div className="flex flex-col gap-4">
-            <h3 className="font-display text-xs font-semibold uppercase tracking-widest text-foreground">
-              Navigate
-            </h3>
-            <ul className="flex flex-col gap-2.5">
-              {footerLinks.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted transition-colors hover:text-accent-hover"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
           </div>
 
           {/* Newsletter + socials */}
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-3">
-              <h3 className="font-display text-xs font-semibold uppercase tracking-widest text-foreground">
-                Stay in the loop
+              <h3 className="font-display text-[10px] sm:text-xs font-black uppercase tracking-widest text-foreground">
+                {stayInLoop}
               </h3>
               <form
                 onSubmit={(e) => e.preventDefault()}
-                className="flex gap-2"
+                className="flex flex-col sm:flex-row gap-2"
               >
                 <input
                   type="email"
                   placeholder="your@email.com"
-                  className="flex-1 rounded-full border border-surface-light bg-surface px-4 py-2.5 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="flex-1 rounded-full border border-surface-light bg-surface px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                 />
                 <SpringWrapper hoverScale={1.06} tapScale={0.95}>
                   <button
                     type="submit"
-                    className="rounded-full bg-accent px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-foreground transition-colors hover:bg-accent-hover"
+                    className="rounded-full bg-accent px-4 sm:px-6 py-2 sm:py-2.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-foreground transition-colors hover:bg-accent-hover active:scale-95 whitespace-nowrap"
                   >
-                    Join
+                    {join}
                   </button>
                 </SpringWrapper>
               </form>
             </div>
 
             {/* Social icons */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               {socialLinks.map((social) => (
                 <SpringWrapper key={social.label} hoverScale={1.15} tapScale={0.9}>
                   <a
                     href={social.href}
                     aria-label={social.label}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-surface-light text-muted transition-colors hover:border-accent hover:text-accent-hover"
+                    className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-surface-light text-muted transition-colors hover:border-accent hover:text-accent-hover active:scale-95"
                   >
-                    <social.icon className="h-4 w-4" />
+                    <social.icon className="h-4 w-4 sm:h-5 sm:w-5" />
                   </a>
                 </SpringWrapper>
               ))}
@@ -125,9 +102,14 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-12 border-t border-surface pt-6 text-center text-xs text-muted">
-          © {new Date().getFullYear()} PerformanceHub. All rights reserved.
+        {/* Bottom bar with affiliate disclosure */}
+        <div className="mt-8 sm:mt-12 border-t border-surface pt-4 sm:pt-6">
+          <div className="text-center text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-muted mb-2 sm:mb-3">
+            © {new Date().getFullYear()} PerformanceHub. All rights reserved.
+          </div>
+          <div className="text-center text-[8px] sm:text-[9px] leading-relaxed text-muted-foreground max-w-2xl mx-auto">
+            {affiliate}
+          </div>
         </div>
       </div>
     </motion.footer>

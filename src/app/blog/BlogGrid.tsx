@@ -3,9 +3,17 @@
 import Link from "next/link";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import ScrollReveal from "@/components/animations/ScrollReveal";
-import type { BlogPost } from "@/lib/data";
 
-export default function BlogGrid({ posts }: { posts: BlogPost[] }) {
+interface LocalizedBlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  readTime: string;
+  image: string;
+}
+
+export default function BlogGrid({ posts }: { posts: LocalizedBlogPost[] }) {
   return (
     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
       {posts.map((post, i) => (

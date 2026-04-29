@@ -3,6 +3,7 @@ import {
   getStoreProductListings,
   type EbayProductListing,
 } from "@/lib/ebay";
+import { generateAffiliateLink } from "@/lib/affiliateUtils";
 import ShopClientContent from "./ShopClientContent";
 
 export default async function ShopPage() {
@@ -22,6 +23,7 @@ export default async function ShopPage() {
       imageUrl: p.images?.[0] || null,
       summaryImages: p.images || [],
       itemWebUrl: p.itemWebUrl || "#",
+      affiliateUrl: generateAffiliateLink({itemId: p.itemId, marketplace: "EBAY_DE", customId: "shop-grid"}),
     }));
   }
 

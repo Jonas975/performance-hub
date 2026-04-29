@@ -1,4 +1,5 @@
 // src/lib/constants.ts
+import { generateAffiliateLink } from "./affiliateUtils";
 
 export const FALLBACK_PRODUCTS = [
   {
@@ -10,6 +11,7 @@ export const FALLBACK_PRODUCTS = [
       'https://images.unsplash.com/photo-1579722820308-d74e5719d0a8?q=80&w=800'
     ],
     itemWebUrl: 'https://www.ebay.de/itm/364052345678',
+    affiliateUrl: generateAffiliateLink({itemId: '364052345678', marketplace: 'EBAY_DE', customId: 'homepage-marquee'}),
     description: 'Hochwertiges Whey Isolat für maximalen Muskelaufbau. Extrem löslich und hervorragender Geschmack.'
   },
   {
@@ -21,6 +23,7 @@ export const FALLBACK_PRODUCTS = [
       'https://images.unsplash.com/photo-1517438476312-10d79c67750d?q=80&w=800'
     ],
     itemWebUrl: 'https://www.ebay.de/itm/255891234567',
+    affiliateUrl: generateAffiliateLink({itemId: '255891234567', marketplace: 'EBAY_DE', customId: 'homepage-marquee'}),
     description: 'Reißfeste Zughilfen aus Baumwolle mit Neopren-Polsterung.'
   },
   {
@@ -32,6 +35,7 @@ export const FALLBACK_PRODUCTS = [
       'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=800'
     ],
     itemWebUrl: 'https://www.ebay.de/itm/267353915763',
+    affiliateUrl: generateAffiliateLink({itemId: '267353915763', marketplace: 'EBAY_DE', customId: 'homepage-marquee'}),
     description: 'Platzsparendes Hantelsystem. Ersetzt 15 einzelne Hantelpaare.'
   },
   /* ── NEUE PRODUKTE ── */
@@ -44,6 +48,7 @@ export const FALLBACK_PRODUCTS = [
       'https://images.unsplash.com/photo-1594494424759-64568dc22d71?q=80&w=800'
     ],
     itemWebUrl: 'https://www.ebay.de/itm/123456789012',
+    affiliateUrl: generateAffiliateLink({itemId: '123456789012', marketplace: 'EBAY_DE', customId: 'homepage-marquee'}),
     description: 'Maximaler Fokus und Pump für deine Trainingseinheiten. Wissenschaftlich fundierte Inhaltsstoffe ohne Crash.'
   },
   {
@@ -55,6 +60,7 @@ export const FALLBACK_PRODUCTS = [
       'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?q=80&w=800'
     ],
     itemWebUrl: 'https://www.ebay.de/itm/234567890123',
+    affiliateUrl: generateAffiliateLink({itemId: '234567890123', marketplace: 'EBAY_DE', customId: 'homepage-marquee'}),
     description: 'Stabile Konstruktion ohne Bohren. Gepolsterte Griffe für optimalen Halt und Schutz des Türrahmens.'
   },
   {
@@ -66,6 +72,7 @@ export const FALLBACK_PRODUCTS = [
       'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?q=80&w=800'
     ],
     itemWebUrl: 'https://www.ebay.de/itm/345678901234',
+    affiliateUrl: generateAffiliateLink({itemId: '345678901234', marketplace: 'EBAY_DE', customId: 'homepage-marquee'}),
     description: 'Effektive Regeneration nach dem Training. 30 Geschwindigkeitsstufen und flüsterleiser Motor.'
   }
 ];

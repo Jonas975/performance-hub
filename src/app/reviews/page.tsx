@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import TikTokEmbed from "@/components/TikTokEmbed";
+import { useTranslation } from "@/hooks/useTranslations";
 
 const videoReviews = [
   { 
@@ -26,6 +27,9 @@ const videoReviews = [
 ];
 
 export default function ReviewsPage() {
+  const videoReviews_label = useTranslation('reviews.videoReviews');
+  const realResults = useTranslation('reviews.realResults');
+  const verifiedAthlete = useTranslation('reviews.verifiedAthlete');
   return (
     <div className="min-h-screen bg-background pt-32 pb-20">
       <div className="max-w-7xl mx-auto px-6">
@@ -40,10 +44,10 @@ export default function ReviewsPage() {
 
         <div className="mb-16">
           <h1 className="font-display text-5xl font-bold uppercase tracking-tighter mb-4 text-white leading-none">
-            Customer <span className="text-accent-hover italic">Video Reviews</span>
+            Customer <span className="text-accent-hover italic">{videoReviews_label}</span>
           </h1>
           <p className="max-w-xl text-lg text-muted-foreground leading-relaxed">
-            Echte Ergebnisse von echten Athleten. Schau dir unsere Community-Reviews direkt aus TikTok an.
+            {realResults}
           </p>
         </div>
 
@@ -61,7 +65,7 @@ export default function ReviewsPage() {
                 <div className="flex items-center gap-2 mb-2">
                   <span className="h-2 w-2 rounded-full bg-red-600 animate-pulse" />
                   <span className="text-accent-hover font-black italic text-xs uppercase tracking-widest">
-                    Verified Athlete
+                    {verifiedAthlete}
                   </span>
                 </div>
                 <h3 className="text-xl font-black uppercase text-white">

@@ -1,15 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
-import { blogPosts } from "@/lib/data";
+import { getLocalizedBlogPosts } from "@/lib/blog-data";
+import { useLocaleContext } from "@/contexts/LocaleContext";
 import BlogGrid from "./BlogGrid";
 
-export const metadata = {
-  title: "Blog | Performance Hub",
-  description:
-    "Evidence-based guides on training, nutrition, and recovery — written for athletes who think critically.",
-};
-
 export default function BlogPage() {
+  const { locale } = useLocaleContext();
+  const blogPosts = getLocalizedBlogPosts(locale as any);
   const [featured, ...rest] = blogPosts;
 
   return (

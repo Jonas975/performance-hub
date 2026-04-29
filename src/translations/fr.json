@@ -1,0 +1,79 @@
+{
+  "nav": {
+    "shop": "Boutique",
+    "reviews": "Avis",
+    "blog": "Blog",
+    "wishlist": "Liste de souhaits"
+  },
+  "hero": {
+    "headline_1": "Elevate",
+    "headline_2": "Your",
+    "headline_3": "Performance.",
+    "description": "Suppléments, équipement et vêtements sélectionnés — de confiance des athlètes, soutenus par la science, construits pour les résultats.",
+    "shopNow": "Acheter maintenant",
+    "productReviews": "Avis sur les produits",
+    "seeAll": "Voir tous"
+  },
+  "marquee": {
+    "featured": "Sélection vedette",
+    "topDeals": "Meilleures offres fitness",
+    "viewAll": "Voir toutes les offres de performance",
+    "seeAll": "Voir tous"
+  },
+  "blog": {
+    "latest": "Derniers",
+    "insights": "aperçus",
+    "knowledge": "Connaissances pour votre performance maximale",
+    "readArticle": "Lire l'article",
+    "exploreAll": "Explorer tous les articles",
+    "backToBlog": "Retour au blog",
+    "readyToLevelUp": "Prêt à passer au niveau supérieur?",
+    "checkProducts": "Consultez nos produits les mieux notés — testés et examinés par des athlètes.",
+    "viewTopPicks": "Voir les meilleurs choix"
+  },
+  "shop": {
+    "label": "La",
+    "title": "Boutique",
+    "found": "Équipement et suppléments trouvés",
+    "search": "Rechercher...",
+    "sort": "Trier",
+    "sortDefault": "Trier",
+    "priceLow": "Prix: Bas",
+    "priceHigh": "Prix: Haut",
+    "nameAZ": "Nom: A-Z",
+    "details": "Détails",
+    "buy": "Acheter"
+  },
+  "product": {
+    "backToShop": "Retour à la boutique",
+    "buyOnEbay": "Acheter sur eBay",
+    "buyerProtection": "Protection de l'acheteur",
+    "shipReady": "Prêt à être expédié",
+    "moreFromShop": "Plus de notre boutique",
+    "couldInterest": "Cela pourrait vous intéresser",
+    "viewAllShop": "Voir tous"
+  },
+  "reviews": {
+    "videoReviews": "Avis vidéo des clients",
+    "realResults": "Des résultats réels d'athlètes réels. Consultez nos avis communautaires directement sur TikTok.",
+    "verifiedAthlete": "Athlète vérifié"
+  },
+  "footer": {
+    "tagline": "Produits de fitness sélectionnés pour les athlètes qui exigent le meilleur. Chaque recommandation soutenue par des tests réels.",
+    "stayInLoop": "Restez informé",
+    "join": "Rejoindre",
+    "affiliate": "Divulgation d'affiliation: Ce site contient des liens d'affiliation vers eBay. Si vous cliquez et effectuez un achat, nous pouvons gagner une commission sans frais supplémentaires pour vous. Nous ne recommandons que des produits auxquels nous croyons."
+  },
+  "wishlist": {
+    "title": "Votre liste de souhaits",
+    "empty": "Votre liste est encore vide",
+    "discover": "Découvrir les produits",
+    "details": "Détails"
+  },
+  "cart": {
+    "title": "Votre panier",
+    "empty": "Votre panier est vide",
+    "looks": "On dirait que vous n'avez pas encore sélectionné de mises à niveau de performance.",
+    "backToShop": "Retour à la boutique"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "nav": {
+    "shop": "Shop",
+    "reviews": "Reviews",
+    "blog": "Blog",
+    "wishlist": "Wishlist"
+  },
+  "hero": {
+    "headline_1": "Elevate",
+    "headline_2": "Your",
+    "headline_3": "Performance.",
+    "description": "Curated supplements, equipment & apparel — trusted by athletes, backed by science, built for results.",
+    "shopNow": "Shop Now",
+    "productReviews": "Product Reviews",
+    "seeAll": "See All"
+  },
+  "marquee": {
+    "featured": "Featured Selection",
+    "topDeals": "Top Fitness Deals",
+    "viewAll": "View All Performance Deals",
+    "seeAll": "See All"
+  },
+  "blog": {
+    "latest": "Latest",
+    "insights": "Insights",
+    "knowledge": "Knowledge for your peak performance",
+    "readArticle": "Read Article",
+    "exploreAll": "Explore All Articles",
+    "backToBlog": "Back to blog",
+    "readyToLevelUp": "Ready to level up?",
+    "checkProducts": "Check out our top-rated products — tested and reviewed by athletes.",
+    "viewTopPicks": "View Top Picks"
+  },
+  "shop": {
+    "label": "The",
+    "title": "Shop",
+    "found": "Equipment & Supplements found",
+    "search": "Search...",
+    "sort": "Sort",
+    "sortDefault": "Sort",
+    "priceLow": "Price: Low",
+    "priceHigh": "Price: High",
+    "nameAZ": "Name: A-Z",
+    "details": "Details",
+    "buy": "Buy"
+  },
+  "product": {
+    "backToShop": "Back to Shop",
+    "buyOnEbay": "Buy on eBay",
+    "buyerProtection": "Buyer Protection",
+    "shipReady": "Ready to Ship",
+    "moreFromShop": "More from our Shop",
+    "couldInterest": "This could interest you",
+    "viewAllShop": "View all"
+  },
+  "reviews": {
+    "videoReviews": "Customer Video Reviews",
+    "realResults": "Real results from real athletes. Check out our community reviews straight from TikTok.",
+    "verifiedAthlete": "Verified Athlete"
+  },
+  "footer": {
+    "tagline": "Curated fitness products for athletes who demand the best. Every recommendation backed by real testing.",
+    "stayInLoop": "Stay in the loop",
+    "join": "Join",
+    "affiliate": "Affiliate Disclosure: This site contains affiliate links to eBay. If you click through and make a purchase, we may earn a commission at no additional cost to you. We only recommend products we believe in."
+  },
+  "wishlist": {
+    "title": "Your Wishlist",
+    "empty": "Your list is still empty",
+    "discover": "Discover products",
+    "details": "Details"
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty",
+    "looks": "Looks like you haven't selected any performance upgrades yet.",
+    "backToShop": "Back to Shop"
+  }
+}

@@ -1,6 +1,8 @@
 // src/lib/ebay.ts
 // eBay Browse API integration with OAuth 2.0 and sandbox/production toggle.
 
+import { generateAffiliateLink } from "./affiliateUtils";
+
 /* ── Environment toggle ── */
 
 const isSandbox = (process.env.EBAY_ENVIRONMENT || "sandbox") === "sandbox";
@@ -75,6 +77,7 @@ export interface EbayProductListing {
   imageUrl: string | null;
   summaryImages: string[]; // Fix: Speichert zusätzliche Bilder aus der Suche für die Bike-Galerie
   itemWebUrl: string;
+  affiliateUrl: string; // eBay Partner Network tracked link
 }
 
 export interface EbayItemDetail {
@@ -84,6 +87,7 @@ export interface EbayItemDetail {
   image: { imageUrl: string } | null;
   additionalImages: { imageUrl: string }[];
   itemWebUrl: string;
+  affiliateUrl: string; // eBay Partner Network tracked link
   condition: string;
   description: string;
   shortDescription: string;
@@ -131,6 +135,7 @@ export async function getStoreProductListings(limit = 12): Promise<EbayProductLi
         imageUrl: item.image?.imageUrl || summaryImages[0] || null,
         summaryImages: summaryImages,
         itemWebUrl: item.itemWebUrl || "#",
+        affiliateUrl: generateAffiliateLink({itemId: item.itemId, marketplace: "EBAY_DE", customId: "shop-grid"}),
       };
     });
   } catch (error) {
@@ -192,6 +197,7 @@ export async function getEbayProduct(itemId: string): Promise<EbayItemDetail | n
         imageUrl: img.imageUrl,
       })),
       itemWebUrl: item.itemWebUrl || "#",
+      affiliateUrl: generateAffiliateLink({itemId: item.itemId, marketplace: "EBAY_DE", customId: "product-detail"}),
       condition: item.condition || "Unknown",
       description: item.description || "",
       shortDescription: item.shortDescription || "",

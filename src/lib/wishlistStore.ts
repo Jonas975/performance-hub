@@ -51,7 +51,7 @@ export const useWishlist = create<WishlistState>()(
       storage: createJSONStorage(() => ({
         getItem: (name) => Cookies.get(name) || null,
         setItem: (name, value) => Cookies.set(name, value, { expires: 365, path: "/" }),
-        removeItem: (name) => { Cookies.remove(name); return undefined; },
+        removeItem: (name) => Cookies.remove(name),
       })),
     }
   )

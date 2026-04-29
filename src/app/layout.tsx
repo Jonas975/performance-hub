@@ -3,6 +3,7 @@ import { Inter, Oswald } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PageTransition from "@/components/animations/PageTransition"; // WICHTIG: Der neue Wrapper
+import { LocaleProvider } from "@/contexts/LocaleContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -32,17 +33,19 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${oswald.variable} antialiased bg-background text-foreground`}
       >
-        {/* Navbar bleibt statisch oben für ein hochwertiges App-Gefühl */}
-        <Navbar />
+        <LocaleProvider>
+          {/* Navbar bleibt statisch oben für ein hochwertiges App-Gefühl */}
+          <Navbar />
 
-        {/* Nur der Hauptinhalt wird beim Routen-Wechsel animiert */}
-        <main>
-          <PageTransition>
-            {children}
-          </PageTransition>
-        </main>
+          {/* Nur der Hauptinhalt wird beim Routen-Wechsel animiert */}
+          <main>
+            <PageTransition>
+              {children}
+            </PageTransition>
+          </main>
 
-        <Footer />
+          <Footer />
+        </LocaleProvider>
       </body>
     </html>
   );

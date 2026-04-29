@@ -4,20 +4,31 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation"; 
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
-import { Menu, X, User, Heart, ShoppingBag } from "lucide-react"; 
+import { Menu, X, Heart } from "lucide-react"; 
 import SpringWrapper from "@/components/animations/SpringWrapper";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useTranslation } from "@/hooks/useTranslations";
 
-const navLinks = [
-  { label: "Shop", href: "/shop" },
-  { label: "Reviews", href: "/reviews" },
-  { label: "Blog", href: "/blog" },
+const navLinksBase = [
+  { labelKey: "nav.shop", href: "/shop" },
+  { labelKey: "nav.reviews", href: "/reviews" },
+  { labelKey: "nav.blog", href: "/blog" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const pathname = usePathname(); 
+  const pathname = usePathname();
   const { scrollY } = useScroll();
+  const shop = useTranslation('nav.shop');
+  const reviews = useTranslation('nav.reviews');
+  const blog = useTranslation('nav.blog');
+  
+  const navLinks = [
+    { label: shop, href: "/shop" },
+    { label: reviews, href: "/reviews" },
+    { label: blog, href: "/blog" },
+  ];
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 32);
@@ -65,24 +76,13 @@ export default function Navbar() {
         </ul>
 
         {/* Desktop Icons (Ohne Badges/Zahlen) */}
-        <div className="hidden md:flex items-center gap-6">
-          <SpringWrapper hoverScale={1.1} tapScale={0.9}>
-            <Link href="/account" className={`transition-colors ${pathname === '/account' ? 'text-accent-hover' : 'text-muted hover:text-foreground'}`} title="Konto">
-              <User size={22} strokeWidth={1.5} />
-            </Link>
-          </SpringWrapper>
-
+        <div className="hidden md:flex items-center gap-4">
           <SpringWrapper hoverScale={1.1} tapScale={0.9}>
             <Link href="/wishlist" className={`transition-colors ${pathname === '/wishlist' ? 'text-accent-hover' : 'text-muted hover:text-foreground'}`} title="Wunschliste">
               <Heart size={22} strokeWidth={1.5} />
             </Link>
           </SpringWrapper>
-
-          <SpringWrapper hoverScale={1.1} tapScale={0.9}>
-            <Link href="/cart" className={`transition-colors ${pathname === '/cart' ? 'text-accent-hover' : 'text-muted hover:text-foreground'}`} title="Warenkorb">
-              <ShoppingBag size={22} strokeWidth={1.5} />
-            </Link>
-          </SpringWrapper>
+          <LanguageSwitcher />
         </div>
 
         {/* Mobile Toggle */}
@@ -119,9 +119,7 @@ export default function Navbar() {
               ))}
               <hr className="border-surface my-2" />
               <li className="flex justify-around py-2">
-                <Link href="/account" onClick={() => setMobileOpen(false)} className={pathname === '/account' ? "text-accent-hover" : "text-muted"}><User size={24} /></Link>
                 <Link href="/wishlist" onClick={() => setMobileOpen(false)} className={pathname === '/wishlist' ? "text-accent-hover" : "text-muted"}><Heart size={24} /></Link>
-                <Link href="/cart" onClick={() => setMobileOpen(false)} className={pathname === '/cart' ? "text-accent-hover" : "text-muted"}><ShoppingBag size={24} /></Link>
               </li>
             </ul>
           </motion.div>
