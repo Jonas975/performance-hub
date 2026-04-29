@@ -23,6 +23,7 @@ export default async function Home() {
       title: p.title,
       price: p.price,
       imageUrl: p.images?.[0] || null,
+      summaryImages: p.images || [],
       itemWebUrl: p.itemWebUrl || "#",
     }));
   }
