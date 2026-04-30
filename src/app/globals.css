@@ -65,3 +65,43 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ── Premium Design Utilities ── */
+.text-gradient-accent {
+  background: linear-gradient(to right, var(--foreground) 0%, var(--accent-hover) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card-hover {
+  transition: all 0.3s ease;
+}
+
+.glass-card-hover:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(20, 184, 166, 0.3);
+  box-shadow: 0 0 20px rgba(20, 184, 166, 0.1);
+}
+
+.grayscale-image {
+  filter: grayscale(100%);
+}
+
+.dark-overlay {
+  position: relative;
+}
+
+.dark-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ChevronRight, ChevronLeft, ShoppingCart } from "lucide-react";
+import { ArrowRight, ChevronRight, ChevronLeft, ShoppingCart, Play } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { generateAffiliateLink } from "@/lib/affiliateUtils";
 import SpringWrapper from "@/components/animations/SpringWrapper";
@@ -73,6 +74,33 @@ export default function MotionHero() {
 
   return (
     <section className="relative min-h-[650px] flex items-center overflow-hidden pt-32 pb-20">
+      {/* Desktop Background Image */}
+      <div className="absolute inset-0 z-0 hidden lg:block">
+        <Image
+          src="/images/hero/athlete-ropes.jpg"
+          alt="Athletes training"
+          fill
+          quality={75}
+          priority
+          className="object-cover grayscale-image"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/50 to-transparent" />
+      </div>
+      
+      {/* Mobile Background Image */}
+      <div className="absolute inset-0 z-0 lg:hidden">
+        <Image
+          src="/images/hero/athlete-kettlebell.jpg"
+          alt="Athlete training"
+          fill
+          quality={75}
+          priority
+          className="object-cover grayscale-image"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
+      </div>
+      
+      {/* Fallback Gradient */}
       <div 
         className="absolute inset-0 z-0 bg-gradient-to-br from-background via-background to-surface/30" 
         style={{ pointerEvents: 'none' }}
@@ -94,7 +122,7 @@ export default function MotionHero() {
                   key={i}
                   variants={wordVariants}
                   className={`mr-2 sm:mr-4 inline-block ${
-                    i === headlineWords.length - 1 ? "text-accent-hover italic" : "text-white"
+                    i === headlineWords.length - 1 ? "text-gradient-accent italic" : "text-white"
                   }`}
                 >
                   {word}
@@ -109,16 +137,31 @@ export default function MotionHero() {
               {description}
             </motion.p>
 
-            {/* Shop Now Button - Responsive Sizing */}
+            {/* CTA Buttons - Primary & Secondary */}
             <motion.div variants={fadeUp} className="flex flex-wrap gap-3 sm:gap-4 pt-2">
+              {/* Primary CTA */}
               <SpringWrapper hoverScale={1.06} tapScale={0.96}>
                 <Link
                   href="/shop"
-                  className="group inline-flex items-center gap-2 rounded-full bg-accent-hover px-5 sm:px-7 py-2.5 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-wide text-background transition-all duration-300 hover:bg-white hover:text-background active:scale-95"
+                  className="group inline-flex items-center gap-2 rounded-full bg-accent-hover px-5 sm:px-7 py-2.5 sm:py-3 text-xs sm:text-sm font-bold uppercase tracking-wide text-background transition-all duration-300 hover:bg-white hover:text-background shadow-lg hover:shadow-xl active:scale-95"
                 >
                   {shopNow}
                   <ArrowRight className="h-3.5 sm:h-4 w-3.5 sm:w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
+              </SpringWrapper>
+              
+              {/* Secondary CTA */}
+              <SpringWrapper hoverScale={1.06} tapScale={0.96}>
+                <button
+                  onClick={() => {
+                    const reviewSection = document.querySelector('.tiktok-reviews');
+                    reviewSection?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="group inline-flex items-center gap-2 rounded-full border-2 border-accent-hover px-5 sm:px-7 py-2 sm:py-2.5 text-xs sm:text-sm font-bold uppercase tracking-wide text-accent-hover transition-all duration-300 hover:bg-accent-hover/10 active:scale-95"
+                >
+                  <Play className="h-3.5 sm:h-4 w-3.5 sm:w-4" />
+                  Watch Reviews
+                </button>
               </SpringWrapper>
             </motion.div>
           </motion.div>
